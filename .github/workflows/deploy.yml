@@ -1,0 +1,17 @@
+name: deploy
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: get the code
+        uses: actions/checkout@v3
+      - name: build the docker image
+        run: npm run build
+      - name: login to docker hub
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: push to docker hub
+        run: docker push $DOCKER_USERNAME/app:1.0
