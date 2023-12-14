@@ -59,6 +59,12 @@ jobs:
   #- name: pull docker image from docker hub
   # run: sshpass -p $SERVER_PASSWORD ssh -tto StrictHostKeyChecking=no $SERVER_USERNAME@SERVER_IP "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && docker run -d codingwitherik995/app:latest"
   ssh-test:
+    env:
+      SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+      SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+      SERVER_IP: ${{ secrets.SERVER_IP }}
+      SERVER_KEY: ${{ secrets.SERVER_KEY }}
+      SERVER_PORT: ${{ secrets.SERVER_PORT }}
     runs-on: ubuntu-latest
     steps:
       - name: executing remote ssh commands using password
