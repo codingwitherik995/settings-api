@@ -7,55 +7,64 @@ on:
     #paths-ignore:
     #- ".github/workflows/*"
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: test the code
-        run: echo "executing tests.."
-      # TODO: replace dummy step with real tests
+  # test:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: test the code
+  #       run: echo "executing tests.."
+  #     # TODO: replace dummy step with real tests
 
-  build:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: get the code
-        uses: actions/checkout@v3
-      - name: build the docker image
-        run: npm run build
-      - name: Upload docker image artifact
-        uses: ishworkh/docker-image-artifact-upload@v2.0.1
-        with:
-          image: "codingwitherik995/app:latest"
+  # build:
+  #   needs: test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: get the code
+  #       uses: actions/checkout@v3
+  #     - name: build the docker image
+  #       run: npm run build
+  #     - name: Upload docker image artifact
+  #       uses: ishworkh/docker-image-artifact-upload@v2.0.1
+  #       with:
+  #         image: "codingwitherik995/app:latest"
 
-  deploy:
-    env:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
-      SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
-      SERVER_IP: ${{ secrets.SERVER_IP }}
-      SERVER_KEY: ${{ secrets.SERVER_KEY }}
-      SERVER_PORT: ${{ secrets.SERVER_PORT }}
-    needs: build
+  # deploy:
+  #   env:
+  #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  #     SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+  #     SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+  #     SERVER_IP: ${{ secrets.SERVER_IP }}
+  #     SERVER_KEY: ${{ secrets.SERVER_KEY }}
+  #     SERVER_PORT: ${{ secrets.SERVER_PORT }}
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: get the code
+  #       uses: actions/checkout@v3
+  #     - name: Download the docker image artifact
+  #       uses: ishworkh/container-image-artifact-download@v1.0.0
+  #       with:
+  #         image: "codingwitherik995/app:latest"
+  #     - name: login to docker hub
+  #       run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+  #     - name: push image to docker hub
+  #       run: docker push codingwitherik995/app:latest
+  #     - name: executing remote ssh commands using password
+  #       uses: appleboy/ssh-action@v1.0.0
+  #       with:
+  #         host: ${{ secrets.SERVER_IP }}
+  #         username: ${{ secrets.SERVER_USERNAME }}
+  #         password: ${{ secrets.SERVER_PASSWORD  }}
+  #         script: whoami
+  #- name: pull docker image from docker hub
+  # run: sshpass -p $SERVER_PASSWORD ssh -tto StrictHostKeyChecking=no $SERVER_USERNAME@SERVER_IP "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && docker run -d codingwitherik995/app:latest"
+  ssh-test:
     runs-on: ubuntu-latest
     steps:
-      - name: get the code
-        uses: actions/checkout@v3
-      - name: Download the docker image artifact
-        uses: ishworkh/container-image-artifact-download@v1.0.0
-        with:
-          image: "codingwitherik995/app:latest"
-      - name: login to docker hub
-        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-      - name: push image to docker hub
-        run: docker push codingwitherik995/app:latest
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD  }}
-          port: ${{ secrets.SERVER_PORT }}
           script: whoami
-      #- name: pull docker image from docker hub
-      # run: sshpass -p $SERVER_PASSWORD ssh -tto StrictHostKeyChecking=no $SERVER_USERNAME@SERVER_IP "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && docker run -d codingwitherik995/app:latest"
