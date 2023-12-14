@@ -1,10 +1,9 @@
 name: deploy
 on: [push, workflow_dispatch]
 jobs:
-  env:
-    DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-    DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   build:
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
     runs-on: ubuntu-latest
     steps:
       - name: get the code
@@ -17,6 +16,9 @@ jobs:
           image: "$DOCKER_USERNAME/app:1.0"
 
   deploy:
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     needs: build
     runs-on: ubuntu-latest
     steps:
