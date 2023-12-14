@@ -13,7 +13,7 @@ jobs:
       - name: Upload docker image artifact
         uses: ishworkh/docker-image-artifact-upload@v2.0.1
         with:
-          image: "$DOCKER_USERNAME/app:1.0"
+          image: "codingwitherik995/app:1.0"
 
   deploy:
     env:
@@ -27,8 +27,8 @@ jobs:
       - name: Download the docker image artifact
         uses: ishworkh/container-image-artifact-download@v1.0.0
         with:
-          image: "$DOCKER_USERNAME/app:1.0"
+          image: "codingwitherik995/app:1.0"
       - name: login to docker hub
         run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - name: push image to docker hub
-        run: docker push $DOCKER_USERNAME/app:1.0
+        run: docker push codingwitherik995/app:1.0
