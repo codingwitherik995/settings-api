@@ -7,9 +7,15 @@ on:
     paths-ignore:
       - ".github/workflows/*"
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: test the code
+        run: echo "executing tests.."
+      # TODO: replace dummy step with real tests
+
   build:
-    env:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: get the code
@@ -38,3 +44,4 @@ jobs:
         run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - name: push image to docker hub
         run: docker push codingwitherik995/app:1.0
+      # TODO: download the docker image to target deployment server
