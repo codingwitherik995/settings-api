@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - ".github/workflows/*"
+    #paths-ignore:
+    #- ".github/workflows/*"
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -34,6 +34,8 @@ jobs:
       SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
       SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
       SERVER_IP: ${{ secrets.SERVER_IP }}
+      SERVER_KEY: ${{ secrets.SERVER_KEY }}
+      SERVER_PORT: ${{ secrets.SERVER_PORT }}
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -47,7 +49,13 @@ jobs:
         run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - name: push image to docker hub
         run: docker push codingwitherik995/app:latest
-      - name: update and grab sshpass
-        run: apt-get update && apt-get install sshpass -y
-      - name: pull docker image from docker hub
-        run: sshpass -p $SERVER_PASSWORD ssh -tto StrictHostKeyChecking=no $SERVER_USERNAME@SERVER_IP "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && docker run -d codingwitherik995/app:latest"
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_KEY  }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: whoami
+      #- name: pull docker image from docker hub
+      # run: sshpass -p $SERVER_PASSWORD ssh -tto StrictHostKeyChecking=no $SERVER_USERNAME@SERVER_IP "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && docker run -d codingwitherik995/app:latest"
