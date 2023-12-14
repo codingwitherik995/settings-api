@@ -1,17 +1,32 @@
 name: deploy
 on: [push, workflow_dispatch]
 jobs:
+  env:
+    DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+    DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   build:
-    env:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     runs-on: ubuntu-latest
     steps:
       - name: get the code
         uses: actions/checkout@v3
       - name: build the docker image
         run: npm run build
+      - name: Upload docker image artifact
+        uses: ishworkh/docker-image-artifact-upload@v2.0.1
+        with:
+          image: "$DOCKER_USERNAME/app:1.0"
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: get the code
+        uses: actions/checkout@v3
+      - name: Download the docker image artifact
+        uses: ishworkh/container-image-artifact-download@v1.0.0
+        with:
+          image: "$DOCKER_USERNAME/app:1.0"
       - name: login to docker hub
         run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-      - name: push to docker hub
+      - name: push image to docker hub
         run: docker push $DOCKER_USERNAME/app:1.0
