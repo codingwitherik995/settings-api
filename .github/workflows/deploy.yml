@@ -1,5 +1,11 @@
 name: deploy
-on: [push, workflow_dispatch]
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - ".github/workflows/*"
 jobs:
   build:
     env:
