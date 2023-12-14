@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "docker build -t codingwitherik995/app:1.0 ."
+    "build": "docker build -t codingwitherik995/app:latest ."
   },
   "author": "Erik Miklodi",
   "license": "ISC",
